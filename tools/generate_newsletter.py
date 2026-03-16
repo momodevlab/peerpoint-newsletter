@@ -265,7 +265,7 @@ def main():
             print(f"ERROR: Required input not found: {p}", file=sys.stderr)
             sys.exit(1)
 
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
     if not api_key:
         print("ERROR: ANTHROPIC_API_KEY not set in .env", file=sys.stderr)
         sys.exit(1)
