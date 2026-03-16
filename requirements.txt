@@ -26,3 +26,4 @@ premailer>=3.10.0
 
 # Utilities
 python-dotenv>=1.0.1
+json-repair>=0.30.0
