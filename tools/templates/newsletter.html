@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>{{ subject_line }}</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ───────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #F7F9FC;
+  color: #2C3A4A;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── WRAPPER ─────────────────────────────────────── */
+.email-wrapper { width: 100%; background: #F7F9FC; padding: 24px 16px; }
+.email-container { max-width: 680px; margin: 0 auto; background: #FFFFFF; }
+
+/* ── HEADER ──────────────────────────────────────── */
+.header {
+  background: #0D2240;
+  padding: 32px 40px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(75,174,79,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header-logo { margin-bottom: 20px; }
+.header-logo img { height: 36px; width: auto; display: block; }
+.header-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #4BAE4F;
+  margin-bottom: 6px;
+}
+.header-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 28px;
+  color: #FFFFFF;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.header-title em { font-style: italic; color: #4BAE4F; }
+.header-date {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 1px;
+  margin-top: 12px;
+}
+
+/* ── SECTION STRUCTURE ───────────────────────────── */
+.section { padding: 36px 40px; border-top: 2px solid #4BAE4F; }
+.section:first-of-type { border-top: none; }
+.section-alt { background: #F7F9FC; }
+.section-dark { background: #1B3A6B; color: #FFFFFF; border-top-color: #4BAE4F; }
+.section-callout { background: #E8F5E9; border-top-color: #4BAE4F; }
+
+.section-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #4BAE4F;
+  margin-bottom: 10px;
+  display: block;
+}
+.section-dark .section-eyebrow { color: #7DC67F; }
+
+.section-headline {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 26px;
+  color: #1B3A6B;
+  line-height: 1.2;
+  margin-bottom: 18px;
+  font-weight: 400;
+}
+.section-dark .section-headline { color: #FFFFFF; }
+.section-callout .section-headline { color: #1B3A6B; }
+
+/* ── BODY TEXT ───────────────────────────────────── */
+.body-text p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #2C3A4A;
+  margin-bottom: 14px;
+}
+.body-text p:last-child { margin-bottom: 0; }
+.section-dark .body-text p { color: rgba(255,255,255,0.85); }
+.section-callout .body-text p { color: #2C3A4A; }
+.body-text a { color: #2563A8; text-decoration: underline; }
+.section-dark .body-text a { color: #7DC67F; }
+.body-text strong { color: #1B3A6B; font-weight: 600; }
+.section-dark .body-text strong { color: #FFFFFF; }
+
+/* ── RATE SNAPSHOT ───────────────────────────────── */
+.rate-snapshot-grid {
+  display: table;
+  width: 100%;
+  margin-bottom: 24px;
+}
+.rate-snapshot-left {
+  display: table-cell;
+  width: 55%;
+  vertical-align: top;
+  padding-right: 24px;
+}
+.rate-snapshot-right {
+  display: table-cell;
+  width: 45%;
+  vertical-align: top;
+}
+.rate-snapshot-right img { width: 100%; height: auto; display: block; border-radius: 8px; }
+
+.rate-row {
+  display: table;
+  width: 100%;
+  padding: 10px 0;
+  border-bottom: 1px solid #EEF1F6;
+}
+.rate-row:last-child { border-bottom: none; }
+.rate-label {
+  display: table-cell;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #5A6A7E;
+  vertical-align: middle;
+  width: 55%;
+}
+.rate-value {
+  display: table-cell;
+  font-family: 'Space Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1B3A6B;
+  vertical-align: middle;
+  text-align: right;
+  width: 25%;
+}
+.rate-change {
+  display: table-cell;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  vertical-align: middle;
+  text-align: right;
+  width: 20%;
+  padding-left: 8px;
+}
+.rate-change.down { color: #4BAE4F; }
+.rate-change.up   { color: #C0392B; }
+.rate-change.flat { color: #5A6A7E; }
+
+.key-takeaway {
+  background: #0D2240;
+  border-left: 3px solid #4BAE4F;
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+  margin-top: 20px;
+}
+.key-takeaway p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.5;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── CHARTS ──────────────────────────────────────── */
+.chart-full { width: 100%; margin: 0; display: block; }
+.chart-full img { width: 100%; height: auto; display: block; }
+
+/* ── TOP STORIES ─────────────────────────────────── */
+.story-card {
+  border-left: 3px solid #4BAE4F;
+  padding: 0 0 0 20px;
+  margin-bottom: 28px;
+}
+.story-card:last-child { margin-bottom: 0; }
+.story-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #4BAE4F;
+  margin-bottom: 6px;
+  display: block;
+}
+.story-headline {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 20px;
+  color: #1B3A6B;
+  line-height: 1.25;
+  margin-bottom: 12px;
+  font-weight: 400;
+}
+.story-body p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #2C3A4A;
+  margin-bottom: 10px;
+}
+.story-body p:last-child { margin-bottom: 0; }
+.story-body a { color: #2563A8; }
+.story-source {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: #5A6A7E;
+  margin-top: 10px;
+  display: block;
+}
+.story-source a { color: #5A6A7E; text-decoration: none; border-bottom: 1px solid #D8DFE9; }
+
+/* ── HARD MONEY PULSE ────────────────────────────── */
+.pulse-takeaway {
+  background: #1B3A6B;
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin-top: 18px;
+}
+.pulse-takeaway p {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: #7DC67F;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── DEAL MATH ───────────────────────────────────── */
+.deal-scenario-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #4BAE4F;
+  margin-bottom: 16px;
+  display: block;
+}
+.deal-math-card {
+  width: 60%;
+  margin: 0 auto 24px;
+  display: block;
+  border-radius: 8px;
+}
+.deal-math-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+/* ── QUICK HITS ──────────────────────────────────── */
+.quick-hits-list { list-style: none; padding: 0; }
+.quick-hits-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid #EEF1F6;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #2C3A4A;
+}
+.quick-hits-list li:last-child { border-bottom: none; }
+.quick-hits-list li::before {
+  content: "—";
+  color: #4BAE4F;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.quick-hits-list a { color: #2563A8; text-decoration: none; border-bottom: 1px dotted #2563A8; }
+.quick-hit-source {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: #5A6A7E;
+  margin-left: 4px;
+}
+
+/* ── FOOTER ──────────────────────────────────────── */
+.footer {
+  background: #0D2240;
+  padding: 32px 40px;
+  text-align: center;
+}
+.footer-logo { margin-bottom: 14px; }
+.footer-logo img { height: 28px; width: auto; display: inline-block; }
+.footer-tagline {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+.footer-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 16px 0;
+}
+.footer-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 1px;
+  line-height: 1.8;
+}
+.footer-meta a { color: rgba(255,255,255,0.4); text-decoration: underline; }
+
+/* ── RESPONSIVE ──────────────────────────────────── */
+@media screen and (max-width: 600px) {
+  .email-wrapper { padding: 0; }
+  .header, .section, .footer { padding-left: 20px; padding-right: 20px; }
+  .rate-snapshot-grid { display: block; }
+  .rate-snapshot-left, .rate-snapshot-right { display: block; width: 100%; padding-right: 0; }
+  .rate-snapshot-right { margin-top: 16px; }
+  .deal-math-card { width: 90%; }
+  .section-headline { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="email-wrapper">
+<div class="email-container">
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="header-logo">
+      {% if logo_white_b64 %}
+      <img src="data:image/png;base64,{{ logo_white_b64 }}" alt="PeerPoint Capital" height="36">
+      {% else %}
+      <span style="font-family:'DM Serif Display',serif;font-size:20px;color:#FFFFFF;">PeerPoint <em style="color:#4BAE4F;">Capital</em></span>
+      {% endif %}
+    </div>
+    <p class="header-eyebrow">Weekly Market Intelligence</p>
+    <h1 class="header-title">The PeerPoint <em>Market Wire</em></h1>
+    <p class="header-date">{{ edition_date_formatted }} &nbsp;·&nbsp; Issue #{{ issue_number }}</p>
+  </div>
+
+  <!-- ── RATE SNAPSHOT ── -->
+  <div class="section">
+    <span class="section-eyebrow">Rate Snapshot</span>
+    <h2 class="section-headline">{{ sections.rate_snapshot.headline }}</h2>
+
+    <div class="rate-snapshot-grid">
+      <div class="rate-snapshot-left">
+        {% for rate in rate_rows %}
+        <div class="rate-row">
+          <span class="rate-label">{{ rate.label }}</span>
+          <span class="rate-value">{{ rate.value }}</span>
+          <span class="rate-change {{ rate.direction }}">{{ rate.change_label }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="rate-snapshot-right">
+        {% if charts.rate_snapshot_card %}
+        <img src="data:image/png;base64,{{ charts.rate_snapshot_card }}" alt="Rate Snapshot">
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="body-text">{{ sections.rate_snapshot.body_html | safe }}</div>
+
+    {% if sections.rate_snapshot.key_takeaway %}
+    <div class="key-takeaway">
+      <p>{{ sections.rate_snapshot.key_takeaway }}</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ── RATE TREND CHART ── -->
+  {% if charts.rate_trend_12mo %}
+  <div class="chart-full">
+    <img src="data:image/png;base64,{{ charts.rate_trend_12mo }}" alt="Mortgage Rate Trend — 52 Weeks">
+  </div>
+  {% endif %}
+
+  <!-- ── TOP STORIES ── -->
+  <div class="section section-alt">
+    <span class="section-eyebrow">This Week</span>
+    <h2 class="section-headline">Top Stories</h2>
+
+    {% for story in sections.top_stories %}
+    <div class="story-card">
+      <span class="story-tag">{{ story.category_tag }}</span>
+      <h3 class="story-headline">{{ story.headline }}</h3>
+      <div class="story-body">{{ story.body_html | safe }}</div>
+      {% if story.source_name %}
+      <span class="story-source">
+        Source:
+        {% if story.source_url %}
+        <a href="{{ story.source_url }}" target="_blank">{{ story.source_name }}</a>
+        {% else %}
+        {{ story.source_name }}
+        {% endif %}
+      </span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- ── HARD MONEY PULSE ── -->
+  <div class="section section-callout">
+    <span class="section-eyebrow">Private Lending</span>
+    <h2 class="section-headline">{{ sections.hard_money_pulse.headline }}</h2>
+    <div class="body-text">{{ sections.hard_money_pulse.body_html | safe }}</div>
+    {% if sections.hard_money_pulse.key_takeaway %}
+    <div class="pulse-takeaway">
+      <p>{{ sections.hard_money_pulse.key_takeaway }}</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ── FED VS MORTGAGE CHART ── -->
+  {% if charts.fed_vs_mortgage %}
+  <div class="chart-full">
+    <img src="data:image/png;base64,{{ charts.fed_vs_mortgage }}" alt="Fed Funds Rate vs. 30yr Fixed">
+  </div>
+  {% endif %}
+
+  <!-- ── DEAL MATH ── -->
+  <div class="section section-dark">
+    <span class="section-eyebrow">Investor Lens</span>
+    <h2 class="section-headline">{{ sections.deal_math.headline }}</h2>
+
+    {% if sections.deal_math.scenario_label %}
+    <span class="deal-scenario-label">{{ sections.deal_math.scenario_label }}</span>
+    {% endif %}
+
+    {% if charts.deal_math_card %}
+    <div class="deal-math-card">
+      <img src="data:image/png;base64,{{ charts.deal_math_card }}" alt="Deal Math">
+    </div>
+    {% endif %}
+
+    <div class="body-text">{{ sections.deal_math.body_html | safe }}</div>
+  </div>
+
+  <!-- ── MARKET INTEL ── -->
+  <div class="section">
+    <span class="section-eyebrow">Fed &amp; Macro</span>
+    <h2 class="section-headline">{{ sections.market_intel.headline }}</h2>
+    <div class="body-text">{{ sections.market_intel.body_html | safe }}</div>
+  </div>
+
+  <!-- ── QUICK HITS ── -->
+  <div class="section section-alt">
+    <span class="section-eyebrow">Quick Hits</span>
+    <h2 class="section-headline">Worth Knowing</h2>
+    <ul class="quick-hits-list">
+      {% for hit in sections.quick_hits %}
+      <li>
+        {% if hit.source_url %}
+        <a href="{{ hit.source_url }}" target="_blank">{{ hit.text }}</a>
+        {% else %}
+        {{ hit.text }}
+        {% endif %}
+        {% if hit.source_name %}
+        <span class="quick-hit-source">— {{ hit.source_name }}</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    <div class="footer-logo">
+      {% if logo_white_b64 %}
+      <img src="data:image/png;base64,{{ logo_white_b64 }}" alt="PeerPoint Capital" height="28">
+      {% endif %}
+    </div>
+    <p class="footer-tagline">Your Capital Partner</p>
+    <hr class="footer-divider">
+    <p class="footer-meta">
+      PeerPoint Capital &nbsp;·&nbsp; The Market Wire &nbsp;·&nbsp; Issue #{{ issue_number }}<br>
+      <a href="#">Unsubscribe</a> &nbsp;·&nbsp; <a href="#">View in browser</a>
+    </p>
+  </div>
+
+</div><!-- /email-container -->
+</div><!-- /email-wrapper -->
+</body>
+</html>

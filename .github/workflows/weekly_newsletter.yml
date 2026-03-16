@@ -1,0 +1,63 @@
+name: Weekly Newsletter
+
+on:
+  schedule:
+    # Every Monday at 7:00 AM Eastern (12:00 UTC)
+    - cron: '0 12 * * 1'
+  workflow_dispatch:  # allows manual trigger from GitHub UI
+
+jobs:
+  generate-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install kaleido (Plotly PNG export)
+        run: pip install kaleido
+
+      - name: Fetch rate data
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: python tools/research_rates.py
+
+      - name: Generate charts
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python tools/create_infographics.py
+
+      - name: Research news
+        env:
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
+        run: python tools/research_perplexity.py
+
+      - name: Write newsletter content
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python tools/generate_newsletter.py
+
+      - name: Assemble HTML
+        run: python tools/assemble_html.py
+
+      - name: Publish draft to Substack
+        env:
+          SUBSTACK_EMAIL: ${{ secrets.SUBSTACK_EMAIL }}
+          SUBSTACK_PASSWORD: ${{ secrets.SUBSTACK_PASSWORD }}
+          SUBSTACK_PUBLICATION: peerpointcapital
+        run: python tools/publish_substack.py
+
+      - name: Upload newsletter as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: newsletter-${{ github.run_id }}
+          path: .tmp/newsletter_*.html
+          retention-days: 30

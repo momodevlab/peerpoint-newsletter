@@ -1,0 +1,28 @@
+# HTTP & async
+httpx>=0.27.0
+
+# AI APIs
+anthropic>=0.28.0
+openai>=1.40.0            # Perplexity uses OpenAI-compatible client
+
+# Google Gemini image generation ("nano banana")
+google-genai>=1.0.0
+
+# Rate & market data
+fredapi>=0.5.2
+yfinance>=0.2.40
+pandas>=2.2.0
+
+# Charts (data-driven)
+plotly>=5.22.0
+kaleido>=0.2.1
+
+# Image processing
+Pillow>=10.3.0
+
+# HTML assembly
+jinja2>=3.1.4
+premailer>=3.10.0
+
+# Utilities
+python-dotenv>=1.0.1
