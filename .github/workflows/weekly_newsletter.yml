@@ -52,8 +52,7 @@ jobs:
 
       - name: Publish draft to Substack
         env:
-          SUBSTACK_EMAIL: ${{ secrets.SUBSTACK_EMAIL }}
-          SUBSTACK_PASSWORD: ${{ secrets.SUBSTACK_PASSWORD }}
+          SUBSTACK_SESSION_COOKIE: ${{ secrets.SUBSTACK_SESSION_COOKIE }}
           SUBSTACK_PUBLICATION: peerpointcapital
         run: python tools/publish_substack.py
 

@@ -28,32 +28,10 @@ load_dotenv()
 BASE_URL = "https://substack.com"
 
 
-def login(email: str, password: str, publication: str) -> dict:
-    """Authenticate and return session cookies."""
-    print("Logging into Substack...")
-    with httpx.Client(follow_redirects=True) as client:
-        resp = client.post(
-            f"{BASE_URL}/api/v1/login",
-            json={
-                "email": email,
-                "password": password,
-                "for_pub": publication,
-                "captcha_response": None,
-            },
-            headers={"Content-Type": "application/json"},
-            timeout=30,
-        )
-        if resp.status_code != 200:
-            print(f"  ERROR: Login failed ({resp.status_code}): {resp.text[:300]}", file=sys.stderr)
-            sys.exit(1)
-
-        cookies = dict(resp.cookies)
-        if not cookies.get("substack.sid"):
-            print("  ERROR: No session cookie returned — check credentials.", file=sys.stderr)
-            sys.exit(1)
-
-        print(f"  Logged in as {email}")
-        return cookies
+def get_cookies_from_session(session_cookie: str) -> dict:
+    """Build cookies dict from a pre-authenticated substack.sid cookie."""
+    print("Using pre-authenticated session cookie...")
+    return {"substack.sid": session_cookie}
 
 
 def extract_body_html(full_html: str) -> str:
@@ -180,11 +158,10 @@ def main():
                         help="Audience: everyone (free+paid) or paid only")
     args = parser.parse_args()
 
-    email       = os.getenv("SUBSTACK_EMAIL", "").strip()
-    password    = os.getenv("SUBSTACK_PASSWORD", "").strip()
-    publication = os.getenv("SUBSTACK_PUBLICATION", "").strip()
+    session_cookie = os.getenv("SUBSTACK_SESSION_COOKIE", "").strip()
+    publication    = os.getenv("SUBSTACK_PUBLICATION", "").strip()
 
-    for name, val in [("SUBSTACK_EMAIL", email), ("SUBSTACK_PASSWORD", password),
+    for name, val in [("SUBSTACK_SESSION_COOKIE", session_cookie),
                       ("SUBSTACK_PUBLICATION", publication)]:
         if not val:
             print(f"ERROR: {name} not set in .env", file=sys.stderr)
@@ -207,8 +184,8 @@ def main():
     full_html = html_path.read_text(encoding="utf-8")
     body_html = extract_body_html(full_html)
 
-    # Authenticate
-    cookies = login(email, password, publication)
+    # Load session
+    cookies = get_cookies_from_session(session_cookie)
 
     # Create draft
     print("Creating Substack draft...")
