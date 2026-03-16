@@ -50,12 +50,6 @@ jobs:
       - name: Assemble HTML
         run: python tools/assemble_html.py
 
-      - name: Publish draft to Substack
-        env:
-          SUBSTACK_SESSION_COOKIE: ${{ secrets.SUBSTACK_SESSION_COOKIE }}
-          SUBSTACK_PUBLICATION: peerpointcapital
-        run: python tools/publish_substack.py
-
       - name: Upload newsletter as artifact
         uses: actions/upload-artifact@v4
         with:
