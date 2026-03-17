@@ -51,7 +51,7 @@ jobs:
         run: python tools/assemble_html.py
 
       - name: Upload newsletter as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: newsletter-${{ github.run_id }}
           path: .tmp/newsletter_*.html
