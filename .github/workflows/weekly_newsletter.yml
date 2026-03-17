@@ -50,8 +50,11 @@ jobs:
       - name: Assemble HTML
         run: python tools/assemble_html.py
 
+      - name: Debug tmp contents
+        run: ls -la .tmp/ || echo ".tmp does not exist"
+
       - name: Upload newsletter as artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         with:
           name: newsletter-${{ github.run_id }}
           path: .tmp/newsletter_*.html
