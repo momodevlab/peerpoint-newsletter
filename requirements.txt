@@ -27,3 +27,7 @@ premailer>=3.10.0
 # Utilities
 python-dotenv>=1.0.1
 json-repair>=0.30.0
+
+# Google Drive upload
+google-api-python-client>=2.120.0
+google-auth>=2.29.0
