@@ -44,24 +44,36 @@ def find_latest_html() -> Path | None:
 
 
 def upload_file(service, file_path: Path, folder_id: str) -> str:
-    """Upload file to Drive folder, overwriting if same name exists. Returns file URL."""
+    """Upload file to a Shared Drive folder, overwriting if same name exists. Returns file URL."""
     file_name = file_path.name
 
-    # Check if a file with this name already exists in the folder
+    # Check if a file with this name already exists in the folder (Shared Drive)
     query = f"name='{file_name}' and '{folder_id}' in parents and trashed=false"
-    results = service.files().list(q=query, fields="files(id, name)").execute()
+    results = service.files().list(
+        q=query,
+        fields="files(id, name)",
+        supportsAllDrives=True,
+        includeItemsFromAllDrives=True,
+    ).execute()
     existing = results.get("files", [])
 
     media = MediaFileUpload(str(file_path), mimetype="text/html", resumable=False)
 
     if existing:
         file_id = existing[0]["id"]
-        service.files().update(fileId=file_id, media_body=media).execute()
+        service.files().update(
+            fileId=file_id,
+            media_body=media,
+            supportsAllDrives=True,
+        ).execute()
         print(f"  Updated existing file: {file_name}")
     else:
         metadata = {"name": file_name, "parents": [folder_id]}
         result = service.files().create(
-            body=metadata, media_body=media, fields="id"
+            body=metadata,
+            media_body=media,
+            fields="id",
+            supportsAllDrives=True,
         ).execute()
         file_id = result["id"]
         print(f"  Uploaded new file: {file_name}")
