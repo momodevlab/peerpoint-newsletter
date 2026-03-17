@@ -28,8 +28,14 @@ premailer>=3.10.0
 python-dotenv>=1.0.1
 json-repair>=0.30.0
 
-# Google Drive upload
-google-api-python-client>=2.120.0
-google-auth>=2.29.0
-google-auth-httplib2>=0.2.0
-google-auth-oauthlib>=1.2.0
+# Google Drive upload (unused — kept for reference)
+# google-api-python-client>=2.120.0
+# google-auth>=2.29.0
+# google-auth-httplib2>=0.2.0
+# google-auth-oauthlib>=1.2.0
+
+# Slack delivery
+slack-sdk>=3.27.0
+
+# Charts (branded cards)
+matplotlib>=3.9.0

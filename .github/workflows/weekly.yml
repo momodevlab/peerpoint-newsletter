@@ -1,0 +1,62 @@
+name: PeerPoint Market Wire — Weekly Run
+
+on:
+  schedule:
+    # Every Monday at 12:00 UTC = 7:00 AM EST (UTC-5) / 8:00 AM EDT (UTC-4)
+    # Adjust the hour if you're in a different timezone:
+    #   CST (UTC-6): change 12 → 13
+    #   PST (UTC-8): change 12 → 15
+    - cron: "0 12 * * 1"
+
+  # Allow manual runs from the GitHub Actions UI
+  workflow_dispatch:
+
+jobs:
+  generate-and-deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      ANTHROPIC_API_KEY:       ${{ secrets.ANTHROPIC_API_KEY }}
+      PERPLEXITY_API_KEY:      ${{ secrets.PERPLEXITY_API_KEY }}
+      GEMINI_API_KEY:          ${{ secrets.GEMINI_API_KEY }}
+      FRED_API_KEY:            ${{ secrets.FRED_API_KEY }}
+      SLACK_BOT_TOKEN:         ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID:        ${{ secrets.SLACK_CHANNEL_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Kaleido (Plotly static export)
+        run: pip install kaleido
+
+      - name: "[1/7] Fetch rate data"
+        run: python tools/research_rates.py
+
+      - name: "[2/7] Generate charts"
+        run: python tools/create_infographics.py
+
+      - name: "[3/7] Research this week's news"
+        run: python tools/research_perplexity.py
+
+      - name: "[4/7] Write newsletter content"
+        run: python tools/generate_newsletter.py
+
+      - name: "[5/7] Assemble HTML"
+        run: python tools/assemble_html.py
+
+      - name: "[6/7] Generate social posts"
+        run: python tools/generate_social_posts.py
+
+      - name: "[7/7] Post to Slack for review"
+        run: python tools/send_to_slack.py
