@@ -50,9 +50,13 @@ jobs:
       - name: Assemble HTML
         run: python tools/assemble_html.py
 
-      - name: Email newsletter
+      - name: Generate social posts
         env:
-          GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          GMAIL_RECIPIENT: ${{ secrets.GMAIL_RECIPIENT }}
-        run: python tools/email_newsletter.py
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python tools/generate_social_posts.py
+
+      - name: Post to Slack for review
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        run: python tools/send_to_slack.py
