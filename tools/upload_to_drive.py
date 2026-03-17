@@ -1,10 +1,12 @@
 """
 upload_to_drive.py
-Uploads the assembled newsletter HTML to a Google Drive folder using a service account.
+Uploads the assembled newsletter HTML to a Google Drive folder using OAuth.
 
 Requires:
-    GOOGLE_SERVICE_ACCOUNT_JSON  — contents of the service account key JSON
-    GOOGLE_DRIVE_FOLDER_ID       — ID of the target Drive folder
+    GOOGLE_CLIENT_ID      — OAuth client ID
+    GOOGLE_CLIENT_SECRET  — OAuth client secret
+    GOOGLE_REFRESH_TOKEN  — OAuth refresh token (run tools/auth_google.py once to get this)
+    GOOGLE_DRIVE_FOLDER_ID — ID of the target Drive folder
 
 Usage:
     python tools/upload_to_drive.py
@@ -12,29 +14,43 @@ Usage:
 """
 
 import argparse
-import json
 import os
 import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
-from google.oauth2.service_account import Credentials
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 load_dotenv()
 
 SCOPES = ["https://www.googleapis.com/auth/drive.file"]
+TOKEN_URI = "https://oauth2.googleapis.com/token"
 
 
 def get_service():
-    sa_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
-    if not sa_json:
-        print("ERROR: GOOGLE_SERVICE_ACCOUNT_JSON not set.", file=sys.stderr)
-        sys.exit(1)
+    client_id     = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+    client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+    refresh_token = os.getenv("GOOGLE_REFRESH_TOKEN", "").strip()
 
-    sa_info = json.loads(sa_json)
-    creds = Credentials.from_service_account_info(sa_info, scopes=SCOPES)
+    for name, val in [("GOOGLE_CLIENT_ID", client_id),
+                      ("GOOGLE_CLIENT_SECRET", client_secret),
+                      ("GOOGLE_REFRESH_TOKEN", refresh_token)]:
+        if not val:
+            print(f"ERROR: {name} not set.", file=sys.stderr)
+            sys.exit(1)
+
+    creds = Credentials(
+        token=None,
+        refresh_token=refresh_token,
+        token_uri=TOKEN_URI,
+        client_id=client_id,
+        client_secret=client_secret,
+        scopes=SCOPES,
+    )
+    creds.refresh(Request())
     return build("drive", "v3", credentials=creds)
 
 
@@ -44,36 +60,23 @@ def find_latest_html() -> Path | None:
 
 
 def upload_file(service, file_path: Path, folder_id: str) -> str:
-    """Upload file to a Shared Drive folder, overwriting if same name exists. Returns file URL."""
+    """Upload file to Drive folder, overwriting if same name exists. Returns file URL."""
     file_name = file_path.name
 
-    # Check if a file with this name already exists in the folder (Shared Drive)
     query = f"name='{file_name}' and '{folder_id}' in parents and trashed=false"
-    results = service.files().list(
-        q=query,
-        fields="files(id, name)",
-        supportsAllDrives=True,
-        includeItemsFromAllDrives=True,
-    ).execute()
+    results = service.files().list(q=query, fields="files(id, name)").execute()
     existing = results.get("files", [])
 
     media = MediaFileUpload(str(file_path), mimetype="text/html", resumable=False)
 
     if existing:
         file_id = existing[0]["id"]
-        service.files().update(
-            fileId=file_id,
-            media_body=media,
-            supportsAllDrives=True,
-        ).execute()
+        service.files().update(fileId=file_id, media_body=media).execute()
         print(f"  Updated existing file: {file_name}")
     else:
         metadata = {"name": file_name, "parents": [folder_id]}
         result = service.files().create(
-            body=metadata,
-            media_body=media,
-            fields="id",
-            supportsAllDrives=True,
+            body=metadata, media_body=media, fields="id"
         ).execute()
         file_id = result["id"]
         print(f"  Uploaded new file: {file_name}")
