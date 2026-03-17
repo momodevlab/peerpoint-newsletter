@@ -31,3 +31,4 @@ json-repair>=0.30.0
 # Google Drive upload
 google-api-python-client>=2.120.0
 google-auth>=2.29.0
+google-auth-httplib2>=0.2.0
